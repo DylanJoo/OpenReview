@@ -7,7 +7,7 @@ Accepted informations scratched from ICLR.cc.
 
 @PAPER
 
-Files: accepted(oral/poster)and rejected papers....depends on the Conference decisions. Contents description: {PID(paper's unique ID), Decision, Title, Abstract, Keyword}
+Files: accepted(oral/poster)and rejected:  papers....depends on the Conference decisions. Contents description: {PID(paper's unique ID), Decision(0: rejected, 1: oral accpeted, 2: poster accepted), Title, Abstract, Keyword}
 
 @REVIEWS
 
