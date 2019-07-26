@@ -1,24 +1,26 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[17]:
 
 
 import openreview
 import pandas as pd
 import numpy as np
-from scratch_util import *
 
 
 # # Scratch the ICLR 2018 accepted paper list(oral, poster)
 
-# In[5]:
+# In[18]:
 
 
 # Scratch the accepted papers' title from ICLR's webpage.
 import re
 import urllib.request
 from bs4 import BeautifulSoup  # Currently, python's standard lib is sufficient for this task.
+
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def extract_oral():
     html = urllib.request.urlopen(
@@ -39,7 +41,7 @@ poster = extract_poster()
 accept = oral+poster
 
 
-# In[6]:
+# In[19]:
 
 
 #Log into openreview.net, and list all the invitations.
@@ -48,7 +50,7 @@ invi = openreview.tools.get_submission_invitations(client)
 iclr_invi = [item for item in invi if ('ICLR' in item)]  # invitations with ICLR
 
 
-# In[7]:
+# In[20]:
 
 
 BS = "ICLR.cc/2018/Conference/-/Blind_Submission"  #With all the submitted papers.
@@ -56,11 +58,18 @@ OR = "ICLR.cc/2018/Conference/-/Paper.*/Official_Review"
 PC = "ICLR.cc/2018/Conference/-/Paper.*/Public_Comment"
 
 
+# In[7]:
+
+
+AR = "ICLR.cc/2017/conference/-/paper.*/acceptance"
+BS = "ICLR.cc/2018/Conference/-/submission" 
+
+
 # # Preparing all the paper submitted to ICLR 2018 
 # 
 # @Using Pandas DataFrame.
 
-# In[8]:
+# In[21]:
 
 
 # Retrieve the paper with oral accpeted.
@@ -77,6 +86,7 @@ for note in openreview.tools.iterget_notes(client, invitation = BS):
         key.append(note.content['keywords'])
 
 oral_df = pd.DataFrame(data = {'PID': pid, 'Title': title, 'Abstract': abstract, 'Keyword': key})
+oral_df.insert(1, 'Decision', 1)
 
 
 # In[9]:
@@ -96,6 +106,7 @@ for note in openreview.tools.iterget_notes(client, invitation = BS):
         key.append(note.content['keywords'])
 
 poster_df = pd.DataFrame(data = {'PID': pid, 'Title': title, 'Abstract': abstract, 'Keyword': key})
+poster_df.insert(1, 'Decision', 1)
 
 
 # In[10]:
@@ -115,20 +126,23 @@ for note in openreview.tools.iterget_notes(client, invitation = BS):
         key.append(note.content['keywords'])
 
 reject_df = pd.DataFrame(data = {'PID': pid, 'Title': title, 'Abstract': abstract, 'Keyword': key})
+reject_df.insert(1, 'Decision', 1)
 
 
-# In[89]:
+# In[11]:
 
 
 #Export into CSV file(Opitional)
-oral_df.to_csv('ICLR18_oral.csv')
-poster_df.to_csv('ICLR18_poster.csv')
-reject_df.to_csv('ICLR18_reject.csv')
+df = pd.concat([oral_df, poster_df, reject_df])
+df.to_csv('ICLR18_submissiom.csv', index = False)
+oral_df.to_csv('ICLR18_oral.csv', index = False)
+poster_df.to_csv('ICLR18_poster.csv', index = False)
+reject_df.to_csv('ICLR18_reject.csv', index = False)
 
 
 # # Preparing official reviews in ICLR 2018 
 
-# In[16]:
+# In[12]:
 
 
 # Retrieve the reviews from openreview.net.
@@ -149,9 +163,9 @@ for note in openreview.tools.iterget_notes(client, invitation = OR):
 or_df = pd.DataFrame(data = {'PID': pid, 'Title': title, 'Review': review, 'Rating': rating, 'Conf': conf})
 
 
-# In[18]:
+# In[13]:
 
 
 #Export into CSV file(Opitional)
-or_df.to_csv('ICLR18_all_reviews.csv')
+or_df.to_csv('ICLR18_reviews.csv', index = False)
 
