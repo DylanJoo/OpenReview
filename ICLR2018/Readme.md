@@ -7,10 +7,14 @@ Accepted informations scratched from ICLR.cc.
 
 @PAPER
 
-Files: accepted(oral/poster)and rejected:  papers....depends on the Conference decisions. Contents description: {PID(paper's unique ID), Decision(-1: invite to workshop, 0: rejected, 1: oral accpeted, 2: poster accepted), Title, Abstract, Keyword}
+Files: ICLR18_submissions.csv...paper depend on ICLR Conference decisions.
+
+Contents description: {PID(paper's unique ID), Decision(-1: invite to workshop, 0: rejected, 1: oral accpeted, 2: poster accepted), Title, Abstract, Keyword}
 
 @REVIEWS
 
-Files: Reviews(on all the paper extract from OpenReview API.) Contents description: {PID(paper's unique ID), Title(of the review), Review, Rating, Conf(confidence))}
+Files: ICLR18_reviews.csv ... official reviews scratch from OpenReview.net
+
+Contents description: {PID(paper's unique ID), Title(of the review), Review, Rating, Conf(confidence))}
 
 
