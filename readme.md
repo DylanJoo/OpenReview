@@ -1,5 +1,17 @@
-Some proccessed dataset as below.
+# ML/DL Conference Submission & Reviews(ICLR)
+* Check some experiments on NLP area.
+* ALl the data collected from OpenReview API
 
-@Tier-I conference papers.
+## Dataset
+* ICLR submissions & Reviews 
 
-@REVIEWS of Tier-I conference paper on OpenReview.net.
+## NLP Task I: Paper Acceptance Classification
+classify the paper accept or not through corpus(Abstract, Title). 
+
+## Model & Frameworks
+* TFIDF + SVM
+
+* MLP
+* CNN
+* LSTM
+* MultiheadAttention
