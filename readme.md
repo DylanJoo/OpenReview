@@ -6,7 +6,7 @@
 * ICLR submissions & Reviews 
 
 ## NLP Task I: Paper Acceptance Classification
-classify the paper accept or not through corpus(Abstract, Title). 
+* classify the paper accept or not through corpus(Abstract, Title). 
 
 ## Model & Frameworks
 * TFIDF + SVM
