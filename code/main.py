@@ -34,10 +34,6 @@ util.hackssl()
 #w2v = KeyedVectors.load('kv/paper6k-300d.kv')   #paper 6k
 #w2v = w2v_paper().model.wv #paper6k-100d
 
-#Selftrained model
-#---------------
-#w2v = ohe().self_train(x, lbl).wv 
-#w2v = ohe().self_train_one(x, lbl).wv  #with one class
 
 #Cheat on OOV
 #---------------
