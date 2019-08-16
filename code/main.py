@@ -5,7 +5,7 @@ import numpy as np
 from Dataset import iclr_data, rt_data
 from Encoder import OneHotEncoder as ohe
 import util
-from w2v import w2v_paper
+from w2v import w2v_paper, w2v_pretrained, w2v_selftrained
 
 arg = [300, 64, 'cpu']
 
@@ -26,30 +26,30 @@ lbl = np.concatenate((lbl18, lbl17))
 
 #Load Pretrained Vocabulary
 #---------------
-from gensim.models import KeyedVectors, Word2Vec
-import gensim.downloader as api
-util.hackssl()
-#w2v = api.load('word2vec-google-news-300')
-#w2v = api.load('glove-wiki-gigaword-100')
-#w2v = KeyedVectors.load('kv/paper6k-300d.kv')   #paper 6k
-#w2v = w2v_paper().model.wv #paper6k-100d
+#w2v = w2v_pretrained('word2vec-google-news-300')
+#w2v = w2v_pretrained('glove-wiki-gigaword-100')
+#w2v = w2v_pretrained('paper6k-300d') # which in the kv repo
+
+#w2v_paper('paper6k-test',x_)
+#combined paper6k with x_ and trained a wv then saved
+#w2v = w2v_pretrained('paper6k-test')
 
 
-#Cheat on OOV
+#Selftrained model(in gensim)
 #---------------
-zero = np.zeros([1, 300])
-w2v.add('<ZERO>', zero)
-unk = np.random.randn(1, 300)
-w2v.add('<UNK>', unk)
-w2v_dict = w2v.vocab
+#w2v = w2v_selftrained(x, lbl, oc = False)
 
+model = False
+d = 100
+
+#model = w2v.model
+#d = w2v.model.vector_size
 
 #Split
 #---------------
-#x_encoded = ohe().fit_transform(x)
-x_encoded = ohe().fit_transform_pretrained(x, w2v_dict)
-loaders = handler().split((x_encoded, lbl), mode = 'pytorch')
-
+x_encoded = ohe().fit_transform(x)  #encoded with wntire dataset.
+#x_encoded = ohe().fit_transform_pretrained(x, w2v.getDict())
+loaders = handler().split_tvt((x_encoded, lbl))
 
 
 
@@ -59,7 +59,6 @@ def run_nn(model, loaders, model_name, prt_model = False):
     total = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print('# of para: {}'.format(total))
 
-    #loaders unpack
     tr, val, te = loaders
     
     #Execute model_1
@@ -73,11 +72,8 @@ def run_nn(model, loaders, model_name, prt_model = False):
     print('Accuracy: {}'.format(e.hist['val_acc']))
     print('F1-Score: {}'.format(e.f1))
 
-d = 300
-#w2v = False
 
-run_nn(models.MLP(d, 2), loaders, 'MLP.pt', w2v)
-run_nn(models.CNN(10, 2, d), loaders, 'CNN.pt', w2v)
-run_nn(models.LSTM(d, 6, 2), loaders, 'LSTM.pt', w2v)
-run_nn(models.MultiHeadAtt(2, d, 2, 2), loaders, 'attention.pt', w2v)
-
+run_nn(models.MLP(d, 2), loaders, 'MLP.pt', model)
+run_nn(models.CNN(10, 2, d), loaders, 'CNN.pt', model)
+run_nn(models.LSTM(d, 6, 2), loaders, 'LSTM.pt', model)
+run_nn(models.MultiHeadAtt(2, d, 2, 2), loaders, 'attention.pt', model)

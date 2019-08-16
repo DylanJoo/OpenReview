@@ -45,21 +45,3 @@ class OneHotEncoder():
 
         return np.array([list(map(vocab.index, [i if i not in oov else '<UNK>' for i in termlist])) for termlist in corpus])
         #return np.array([list(map(vocab.index, [i for i in termlist if i not in oov])) for termlist in corpus])
-
-    def self_train(self, corpus, lbl):
-        x, _, _, _ = tts(corpus, lbl, test_size = 0.2, stratify = lbl, random_state = 87)
-        x = util.np2list(x)
-        model = Word2Vec(x, size = 100, window = 5, min_count = 1, iter = 200)
-        print('self triained!', len(x))
-        return model
-
-    def self_train_one(self, corpus, lbl):
-        x1, _, lbl1, _ = tts(corpus, lbl, test_size = 0.2, stratify = lbl, random_state = 87) #train, test 
-        x1, _, lbl1, _ = tts(x1, lbl1, test_size = 1/8, stratify = lbl1, random_state = 87) #train, val
-
-        fil = (lbl1 == 1)
-        x1 = util.np2list(x1[fil])
-        model = Word2Vec(x1, size=100, window=5, min_count=1, iter=200)
-        print('Trained only with labeld in accepted!', len(x1))
-        return model
-        
