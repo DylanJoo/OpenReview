@@ -21,3 +21,6 @@
 * CNN
 * LSTM
 * MultiheadAttention
+
+# Experiment Results, (continously updated..)
+google sheet: https://docs.google.com/spreadsheets/d/1FBjq4Vu5Wcx1nTe0o7UMBqhx9Vd_jtVNJxI8vqzeWaA/edit?usp=sharing
