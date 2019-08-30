@@ -17,7 +17,33 @@ class executer():
         self.device = arg[2]
         self.hist = {}
 
+    def cv(self, trset, valset, teset):
+
+        print("N-Fold: ",len(trset))
+
+        score = np.empty([0, ])
+        f1 = np.empty([0, ])
+
+        for n in range(len(trset)):
+            
+            tr_kf = trset[n]
+            val_kf = valset[n]
+            te_kf = teset[n]
+
+            print('===#'+str(n)+' FOLD Start===')
+            
+            self.train(tr_kf, val_kf)
+            self.validate(te_kf)
+            print('Accuracy: {}'.format(self.hist['val_acc']))
+            print('F1-Score: {}'.format(self.f1))
+            score = np.append(score, self.hist['val_acc'])
+            f1 = np.append(f1, self.f1)
+            
+        return score, f1
+        
     def train(self, train_loader, val_loader):
+
+        self.hist = {}
 
         es = EarlyStopping(patience=10, verbose=True)
 
@@ -41,13 +67,10 @@ class executer():
                     optimizer.zero_grad()
                     
                     pred = self.model(x_)  # FP
-                    #print('pr:', pred)
-                    # pred with a vectors
+
                     loss = criterion(pred, lbl_)  # Loss counting'
                     loss.backward() # BP
-                    #print('pred:', np.array(list(map(np.argmax, pred.detach().cpu()))))
-                    #print('lbl:', np.array(lbl_))
-                    
+
                     train_loss += loss.item()*len(x_)/len(train_loader.dataset)
                     train_acc += self.accuracy(pred, lbl_).item()*len(x_)/len(train_loader.dataset)
                     optimizer.step() # UPDATE

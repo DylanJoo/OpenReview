@@ -8,7 +8,7 @@ class icml_data():
         self._load(yr)
 
     def _load(self, yr): #17-19
-        a = 'ICML/ICML'+str(yr)+'_paper.csv'
+        a = '../ICML/ICML'+str(yr)+'_paper.csv'
         self.df = pd.read_csv(a)
 
     def getAbstract(self):
@@ -26,7 +26,7 @@ class nips_data():
         self._load(yr)
 
     def _load(self, yr): #13-18
-        a = 'NIPS/NIPS'+str(yr)+'_paper.csv'
+        a = '../NIPS/NIPS'+str(yr)+'_paper.csv'
         self.df = pd.read_csv(a)
         
     def getAbstract(self):
@@ -50,23 +50,26 @@ class iclr_data():
     def _load(self, yr, select):
         
         if yr == 18:
-            s = 'ICLR/ICLR18_submissions.csv'
-            r = 'ICLR/ICLR18_reviews.csv'
+            s = '../ICLR/ICLR18_submissions.csv'
+            r = '../ICLR/ICLR18_reviews.csv'
         else:
-            s = 'ICLR/ICLR17_submissions.csv'
-            r = 'ICLR/ICLR17_reviews.csv'
+            s = '../ICLR/ICLR17_submissions.csv'
+            r = '../ICLR/ICLR17_reviews.csv'
         
         if select == 'submission':
             self.df = pd.read_csv(s)
             self.df.Decision.replace(to_replace = 2, value = 1, inplace = True)
-            self.df.Decision.replace(to_replace = -1, value = 0, inplace = True)
+            #self.df.Decision.replace(to_replace = -1, value = 0, inplace = True)
+            # Try remove the label [invite to the workshop]
+            self.df = self.df[self.df.Decision != -1]
+            self.df.reset_index(inplace = True)
             
         elif select == 'review':
             df_r = pd.read_csv(r).groupby('PID', as_index = False).agg(lambda x: x.tolist())
             self.df = pd.read_csv(s).join(df_r.set_index('PID'), \
                                           on = 'PID', lsuffix='_paper', rsuffix='_review')
             self.df.Decision.replace(to_replace = 2, value = 1, inplace = True)
-            self.df.Decision.replace(to_replace = -1, value = 0, inplace = True)
+            #self.df.Decision.replace(to_replace = -1, value = 0, inplace = True)
 
 
     def getReview(self):

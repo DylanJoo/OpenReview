@@ -1,7 +1,34 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from layers import GraphConvolution
 import util
+
+class VCNN(nn.Module):
+        def __init__(self, Kernal=10, classes=2, embed_size=64):
+            super(VCNN, self).__init__()
+            self.loss = nn.CrossEntropyLoss()		
+            self.embed = nn.Embedding(10000, embed_size)
+
+            self.conv3 = nn.Conv2d(1, Kernal, (2, embed_size), padding=(1, 0))		
+            self.final = nn.Linear(Kernal, classes)
+
+        def load_embedding(self, model):
+            weight = model.vectors
+            self.embed = nn.Embedding.from_pretrained(torch.FloatTensor(weight))
+
+        def loss_function(self):
+            return self.loss
+
+        def forward(self, x_):
+            x_fp = self.embed(x_).unsqueeze(1)
+            x3 = F.relu(self.conv3(x_fp)).squeeze(3)
+            x3 = F.max_pool1d(x3, x3.size(2)).squeeze(2)
+            cnn_out = x3
+
+            output = self.final(cnn_out)
+            return output
+
 
 class CNN(nn.Module):
 	def __init__(self, Kernal=10, classes=2, embed_size=64):
@@ -105,8 +132,11 @@ class MLP(nn.Module):
 		self.loss = nn.CrossEntropyLoss() #NLLLOSS + Log_softmax
 		
 		self.embed = nn.Embedding(10000, dim)
-		self.in_net = nn.Linear(dim, 16)
-		self.o_net = nn.Linear(16, classes)
+		self.in_net1 = nn.Linear(dim, 16)
+		self.in_net2 = nn.Linear(16, 32)
+		self.in_net3 = nn.Linear(32, 64)
+		self.in_net4 = nn.Linear(64, 128)
+		self.o_net = nn.Linear(128, classes)
 
 	def load_embedding(self, model):
                 weight = model.vectors
@@ -115,13 +145,16 @@ class MLP(nn.Module):
 	def loss_function(self):
 		return self.loss
 	
-	def forward(self, x_):
-                x_fp = self.embed(x_)
+	def forward(self, X):
+                x_fp = self.embed(X)
 
                 x_fp = F.avg_pool2d(x_fp, (x_fp.size(1), 1)).squeeze(1)
                 # doc vector represented by avg.
 		
-                x_fp = F.relu(self.in_net(x_fp))
+                x_fp = F.relu(self.in_net1(x_fp))
+                x_fp = F.relu(self.in_net2(x_fp))
+                x_fp = F.relu(self.in_net3(x_fp))
+                x_fp = F.relu(self.in_net4(x_fp))
 	
                 out = self.o_net(x_fp)
                 return out
@@ -155,3 +188,21 @@ class LSTM(nn.Module):
                 out = self.final(lstm_out[:, -1, :])
 
                 return out
+
+class GCN(nn.Module):
+    def __init__(self, embed_dim=64, nhid=3, nclass=2, dropout=0.2):
+        super(GCN, self).__init__()
+        self.loss = nn.CrossEntropyLoss()
+        
+        self.gc1 = GraphConvolution(embed_dim, nhid)
+        self.gc2 = GraphConvolution(nhid, nclass)
+        self.dropout = dropout
+
+    def loss_function(self):
+        return self.loss
+
+    def forward(self, x, adj):
+        x = F.relu(self.gc1(x, adj))
+        x = F.dropout(x, self.dropout)
+        out = self.gc2(x, adj)
+        return out

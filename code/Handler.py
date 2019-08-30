@@ -70,5 +70,27 @@ class handler():
         print('RESAMPLED: '+ len(x)+ 'to', len(x_re))
         return x_re.reshape(-1, ), y_re
 
+    def skfold(self, x, y, n=10):
+        
+        from sklearn.model_selection import RepeatedStratifiedKFold
+        from sklearn.model_selection import train_test_split as tts
+        rskf = RepeatedStratifiedKFold(n_splits=n, n_repeats=1, random_state=1)
+        tr = []
+        val = []
+        te = []
 
+        for tr_idx, val_idx in rskf.split(x, y):
+            x_train, x_test, lbl_train, lbl_test = \
+                     tts(x[tr_idx], y[tr_idx], test_size=2/(n-1), stratify=y[tr_idx])
+
+            print('ratio:', sum(lbl_train))
+            tr.append(self.load(x_train, lbl_train))  #0.7
+            print('ratio:', sum(y[val_idx]))
+            val.append(self.load(x[val_idx], y[val_idx])) #0.1
+            print('ratio:', sum(lbl_test))
+            te.append(self.load(x_test, lbl_test)) #0.2
+
+        return tr, val, te  #n set of dataloader
+
+        
         

@@ -6,6 +6,7 @@ from Dataset import nips_data, icml_data
 import util
 import numpy as np
 from sklearn.utils import shuffle
+from Handler import handler
 #https://arxiv.org/pdf/1507.05523.pdf
 
 class w2v_paper():
@@ -28,10 +29,8 @@ class w2v_paper():
         return paper
 
     def save(self, fname):
-        self.model.save('kv/'+fname+'.kv')
+        self.model.wv.save('../kv/'+fname+'.kv')
         print('saved!')
-
-
 
 class w2v_pretrained():
 
@@ -41,7 +40,7 @@ class w2v_pretrained():
             self.model = api.load(model_name) # import the gensim pretrained model
             # 'word2vec-google-news-300', 'glove-wiki-gigword-100d'
         except:
-            self.model = KeyedVectors.load('kv/'+model_name+'.kv')
+            self.model = KeyedVectors.load('../kv/'+model_name+'.kv')
             # 'paper6k-300d', 'paper6k-100d'
         self.add()
         
@@ -66,9 +65,12 @@ class w2v_selftrained(): # need to be pre-split,
             print('One class strategy.')
         x = util.np2list(x)
         self.model = Word2Vec(x, size = 100, window = 5, min_count = 1, iter = 20)
+
+        self.model.wv.save(get_tmpfile("temp.kv"))
+        self.model = KeyedVectors.load(get_tmpfile("temp.kv"), mmap='r')
         self.add()
 
-    def getDict():
+    def getDict(self):
         return self.model.vocab
 
     def add(self, token=None, vector=None):
