@@ -1,6 +1,6 @@
 # ML/DL Conference Submission & Reviews(ICLR)
 * Check some experiments on NLP area.
-* ALl the data collected from OpenReview API
+* All the data collected from OpenReview API
 
 ## Dataset
 * ICLR Submissions & Reviews (2017, 2018)
