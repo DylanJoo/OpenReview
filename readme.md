@@ -4,12 +4,12 @@
 
 ## Dataset
 * ICLR Submissions & Reviews (2017, 2018)
-> Title, Abstract, Keywords, Decision, Reviews, Rating, Confidence 
+> Title, Abstract, Keywords, Decision(Oral, Poster, Reject, Inivite to workshop), Reviews, Rating, Confidence 
 
-#### Bous Dataset
+#### Additonal Dataset
 * NIPS Accepted Paper (2013 - 2018)
 * ICML Accepted Paper (2017 - 2019)
-> Title, Abstract, Decision
+> Title, Abstract, Decision(Oral, Poster)
 
 ## NLP Task I: ICLR Paper Acceptance Classification
 * classify the paper into accept or reject through corpus(Abstract, Title). 
