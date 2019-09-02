@@ -12,7 +12,6 @@
 > Title, Abstract, Decision(Oral, Poster)
 
 ## NLP Task I: ICLR Paper Acceptance Classification
-* classify the paper into accept or reject through corpus(Abstract, Title). 
 
 ## Model & Frameworks
 * TFIDF + SVM
@@ -20,7 +19,7 @@
 * MLP
 * CNN
 * LSTM
-* MultiheadAttention
+* MultiheadAttention...
 
-# Experiment Results, (continously updated..)
+# Experiment Results, (updated...)
 google sheet: https://docs.google.com/spreadsheets/d/1FBjq4Vu5Wcx1nTe0o7UMBqhx9Vd_jtVNJxI8vqzeWaA/edit?usp=sharing
